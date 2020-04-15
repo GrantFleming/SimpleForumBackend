@@ -1,0 +1,6 @@
+---
+applications:
+- name: SimpleForumBackend
+  memory: 768M
+  random-route: true
+  path: ../target/SimpleForumBackend-cf.jar

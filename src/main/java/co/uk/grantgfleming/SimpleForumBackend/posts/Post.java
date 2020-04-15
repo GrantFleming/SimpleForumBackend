@@ -11,15 +11,17 @@ import javax.persistence.Id;
 public class Post {
 
     private @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "POST_GENERATOR")
     Long id;
+    private Long forumId;
     private String title;
     private String body;
 
     public Post() {
     }
 
-    public Post(String title, String body) {
+    public Post(Long forumId, String title, String body) {
+        this.forumId = forumId;
         this.title = title;
         this.body = body;
     }

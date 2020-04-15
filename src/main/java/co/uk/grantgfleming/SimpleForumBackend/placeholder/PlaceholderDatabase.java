@@ -1,5 +1,7 @@
 package co.uk.grantgfleming.SimpleForumBackend.placeholder;
 
+import co.uk.grantgfleming.SimpleForumBackend.forums.Forum;
+import co.uk.grantgfleming.SimpleForumBackend.forums.ForumRepository;
 import co.uk.grantgfleming.SimpleForumBackend.posts.Post;
 import co.uk.grantgfleming.SimpleForumBackend.posts.PostRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +14,11 @@ import org.springframework.context.annotation.Configuration;
 public class PlaceholderDatabase {
 
     @Bean
-    CommandLineRunner initDatabase(PostRepository repository) {
+    CommandLineRunner initDatabase(PostRepository postRepository, ForumRepository forumRepository) {
         return args -> {
-            log.info("Preloading " + repository.save(new Post("First Post", "Some content here")));
-            log.info("Preloading " + repository.save(new Post("Second Post", "Some more content here")));
+            log.info("Preloading " + forumRepository.save(new Forum("Forum Title", "Forum Description")));
+            log.info("Preloading " + postRepository.save(new Post(1L, "First Post", "Some content here")));
+            log.info("Preloading " + postRepository.save(new Post(1L, "First Post", "Some content here")));
         };
     }
 }

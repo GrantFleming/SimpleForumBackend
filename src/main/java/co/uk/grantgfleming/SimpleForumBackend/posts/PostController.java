@@ -1,5 +1,7 @@
 package co.uk.grantgfleming.SimpleForumBackend.posts;
 
+import co.uk.grantgfleming.SimpleForumBackend.forums.ForumRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -8,14 +10,16 @@ import java.util.List;
 public class PostController {
 
     private final PostRepository repository;
+    private final ForumRepository forumRepository;
 
-    public PostController(PostRepository repository) {
+    public PostController(PostRepository repository, ForumRepository forumRepository) {
         this.repository = repository;
+        this.forumRepository = forumRepository;
     }
 
     @GetMapping("/posts")
-    List<Post> all() {
-        return repository.findAll();
+    List<Post> byForumId(@RequestParam("forumId") Long forumId) {
+        return repository.findByForumId(forumId);
     }
 
     @GetMapping("/posts/{id}")
@@ -24,20 +28,13 @@ public class PostController {
     }
 
     @PostMapping("/posts")
+    @ResponseStatus(HttpStatus.CREATED)
     Post newPost(@RequestBody Post post) {
-        return repository.save(post);
-    }
-
-    @PutMapping("/employees/{id}")
-    Post replaceEmployee(@RequestBody Post newPost, @PathVariable Long id) {
-        return repository.findById(id).map(post -> {
-            post.setTitle(newPost.getTitle());
-            post.setBody(newPost.getBody());
+        if (forumRepository.existsById(post.getForumId())) {
             return repository.save(post);
-        }).orElseGet(() -> {
-            newPost.setId(id);
-            return repository.save(newPost);
-        });
+        } else {
+            return post;
+        }
     }
 
     @DeleteMapping("/posts/{id}")
