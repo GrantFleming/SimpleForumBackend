@@ -1,4 +1,4 @@
-package co.uk.grantgfleming.SimpleForumBackend.posts;
+package co.uk.grantgfleming.SimpleForumBackend.services;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

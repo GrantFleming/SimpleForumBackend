@@ -33,4 +33,4 @@ jobs:
           cf_password: ${{ secrets.CF_PASSWORD }}
           cf_org: simpleforum-org
           cf_space: production
-          command: push -f cloudfoundry/manifest.yml
+          command: push -f cloudfoundry/prodManifest.yml

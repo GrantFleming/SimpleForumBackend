@@ -1,4 +1,4 @@
-package co.uk.grantgfleming.SimpleForumBackend.forums;
+package co.uk.grantgfleming.SimpleForumBackend.data_access;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

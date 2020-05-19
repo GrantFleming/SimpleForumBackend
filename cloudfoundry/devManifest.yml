@@ -1,0 +1,8 @@
+---
+applications:
+- name: SimpleForumBackend
+  memory: 768M
+  random-route: true
+  path: ../target/SimpleForumBackend-cf.jar
+  env:
+    SPRING_PROFILES_ACTIVE: dev
