@@ -1,4 +1,4 @@
-package co.uk.grantgfleming.SimpleForumBackend.forums;
+package co.uk.grantgfleming.SimpleForumBackend.data_access;
 
 import lombok.Data;
 
@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+/**
+ * Represents a forum
+ */
 @Data
 @Entity
 public class Forum {
@@ -16,11 +19,5 @@ public class Forum {
     private String name;
     private String description;
 
-    public Forum() {
-    }
-
-    public Forum(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
 }
+

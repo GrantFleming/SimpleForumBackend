@@ -1,4 +1,4 @@
-package co.uk.grantgfleming.SimpleForumBackend.posts;
+package co.uk.grantgfleming.SimpleForumBackend.data_access;
 
 import lombok.Data;
 
@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+/**
+ * Represents a post
+ */
 @Data
 @Entity
 public class Post {
@@ -17,12 +20,4 @@ public class Post {
     private String title;
     private String body;
 
-    public Post() {
-    }
-
-    public Post(Long forumId, String title, String body) {
-        this.forumId = forumId;
-        this.title = title;
-        this.body = body;
-    }
 }

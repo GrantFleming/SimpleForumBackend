@@ -1,5 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,17 +14,19 @@ public class SimpleForumBackendApplication {
 		SpringApplication.run(SimpleForumBackendApplication.class, args);
 	}
 
+	@Value("${frontend.url}")
+	private String frontendOrigin;
+
 	/**
-	 * TODO - configure properly, at the moment allows all origins
-	 *
-	 * @return
+	 * Configure CORS to allow access from the frontEnd
 	 */
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*");
+				registry.addMapping("/forums/**").allowedOrigins(frontendOrigin);
+				registry.addMapping("/posts/**").allowedOrigins(frontendOrigin);
 			}
 		};
 	}
