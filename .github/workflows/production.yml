@@ -1,9 +1,7 @@
-name: Production - Test, build and deploy
+name: Deploy to production
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
