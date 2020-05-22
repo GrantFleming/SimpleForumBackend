@@ -23,6 +23,7 @@ public class SimpleForumBackendApplication {
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
+			//lol
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/forums/**").allowedOrigins(frontendOrigin);
