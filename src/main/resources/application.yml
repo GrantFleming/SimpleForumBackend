@@ -1,0 +1,6 @@
+frontend:
+  url: https://grantfleming.github.io
+
+jwt:
+  expiration-time: 43200000 # 12 hours
+
