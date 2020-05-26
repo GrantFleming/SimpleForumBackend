@@ -6,7 +6,7 @@ name: Unit and Integration Tests
 on: [pull_request]
 
 jobs:
-  build-test-deployDevelopment:
+  build-test:
 
     runs-on: ubuntu-latest
 
