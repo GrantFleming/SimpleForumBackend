@@ -1,14 +1,14 @@
 {
   "properties": [
     {
-      "name": "frontend.origin",
-      "type": "java.lang.String",
-      "description": "Description for frontend.origin."
-    },
-    {
       "name": "frontend.url",
       "type": "java.lang.String",
       "description": "Description for frontend.url."
+    },
+    {
+      "name": "jwt.expiration-time",
+      "type": "java.lang.String",
+      "description": "Description for jwt.expiration-time."
     }
   ]
 }
