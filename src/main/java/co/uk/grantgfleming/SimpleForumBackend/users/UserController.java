@@ -17,6 +17,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     User register(@RequestParam String email, @RequestParam String password) throws UserAlreadyExistsException {
         if (emailExists(email))
             throw new UserAlreadyExistsException(email);
@@ -25,7 +26,7 @@ public class UserController {
         return repository.save(u);
     }
 
-    @PostMapping("/validateEmail")
+    @GetMapping("/validateEmail")
     Boolean emailExists(@RequestParam String email) {
         return repository.existsByEmail(email);
     }
