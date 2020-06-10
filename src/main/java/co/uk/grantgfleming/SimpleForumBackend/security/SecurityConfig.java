@@ -41,7 +41,8 @@ public class SecurityConfig {
                     .anonymous()
                     .disable()
                     .authorizeRequests(authorize -> authorize.anyRequest().authenticated())
-                    .httpBasic(withDefaults());
+                    .httpBasic(withDefaults())
+                    .cors();
         }
     }
 

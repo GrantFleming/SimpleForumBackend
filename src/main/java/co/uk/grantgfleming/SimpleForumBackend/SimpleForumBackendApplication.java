@@ -35,8 +35,7 @@ public class SimpleForumBackendApplication {
 	private class MvcConfig implements WebMvcConfigurer {
 		@Override
 		public void addCorsMappings(CorsRegistry registry) {
-			registry.addMapping("/api/forums/**").allowedOrigins(frontendOrigin);
-			registry.addMapping("/api/posts/**").allowedOrigins(frontendOrigin);
+			registry.addMapping("/**").allowedOrigins(frontendOrigin);
 		}
 	}
 }
