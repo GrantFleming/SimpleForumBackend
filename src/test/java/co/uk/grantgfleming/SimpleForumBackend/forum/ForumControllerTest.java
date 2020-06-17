@@ -2,6 +2,7 @@ package co.uk.grantgfleming.SimpleForumBackend.forum;
 
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.ForumService;
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.InvalidNewForumException;
+import co.uk.grantgfleming.SimpleForumBackend.users.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,31 +17,38 @@ import static org.mockito.Mockito.*;
 class ForumControllerTest {
 
     ForumController controller;
-    ForumService service;
+    ForumService mockForumService;
 
     @BeforeEach
     void setUp() {
-        service = mock(ForumService.class);
-        controller = new ForumController(service);
+        mockForumService = mock(ForumService.class);
+
+        // by default for these tests we have the forumService return empty forums
+        // to avoid NullPointerExceptions
+        Forum serviceReturnedForum = new Forum();
+        serviceReturnedForum.setUser(new User());
+        when(mockForumService.addForum(any())).thenReturn(serviceReturnedForum);
+        when(mockForumService.findForumById(any())).thenReturn(serviceReturnedForum);
+
+        controller = new ForumController(mockForumService);
     }
 
     @Test
     void getAllForumsShouldCallCorrectServiceMethod() {
         controller.getAllForums();
-        verify(service, times(1)).allForums();
+        verify(mockForumService, times(1)).allForums();
     }
 
     @Test
     void getForumsByIdShouldCallCorrectServiceMethod() {
         controller.getForumById(6L); // 6 is arbitrary
-        verify(service, times(1)).findForumById(6L);
+        verify(mockForumService, times(1)).findForumById(6L);
     }
 
     @Test
     void postNewForumShouldCallCorrectServiceMethod() {
-        Forum testForum = new Forum();
-        controller.postNewForum(testForum);
-        verify(service, times(1)).addForum(testForum);
+        controller.postNewForum(new ForumDTO());
+        verify(mockForumService, times(1)).addForum(any());
     }
 
     @Test

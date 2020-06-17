@@ -41,7 +41,7 @@ public class BearerAuthenticationToken extends AbstractAuthenticationToken {
      * @param credentials        The bearer token used to prove the identity of the principle
      * @param grantedAuthorities The authorities granted to the authenticated principle
      */
-    public BearerAuthenticationToken(Object principle, String credentials, Collection<GrantedAuthority> grantedAuthorities) {
+    public BearerAuthenticationToken(Object principle, String credentials, Collection<? extends GrantedAuthority> grantedAuthorities) {
         super(grantedAuthorities);
         this.principle = principle;
         this.credentials = credentials;

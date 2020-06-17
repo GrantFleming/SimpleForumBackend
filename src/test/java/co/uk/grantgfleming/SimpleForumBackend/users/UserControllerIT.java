@@ -31,6 +31,7 @@ public class UserControllerIT {
 
     @Test
     void shouldReturn201OnSuccessfulRegistration() throws Exception {
+        when(userRepository.save(any())).thenReturn(new User());
         mvc.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .content("email=someemail&alias=somealias&password=somepassword")).andExpect(status().isCreated());

@@ -1,10 +1,9 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum;
 
+import co.uk.grantgfleming.SimpleForumBackend.users.User;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Represents a post
@@ -16,8 +15,16 @@ public class Post {
     private @Id
     @GeneratedValue(generator = "POST_GENERATOR")
     Long id;
-    private Long forumId;
+
+    @ManyToOne
+    private Forum forum;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
+
     private String title;
+
     private String body;
 
 }

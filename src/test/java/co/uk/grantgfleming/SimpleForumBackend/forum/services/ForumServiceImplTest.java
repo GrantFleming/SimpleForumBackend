@@ -1,6 +1,7 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum.services;
 
 import co.uk.grantgfleming.SimpleForumBackend.forum.ForumRepository;
+import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 
 /**
  * Unit test {@link ForumServiceImpl} by overriding the interface test and
@@ -9,7 +10,7 @@ import co.uk.grantgfleming.SimpleForumBackend.forum.ForumRepository;
 class ForumServiceImplTest extends ForumServiceTest {
 
     @Override
-    public ForumService createInstance(ForumRepository repository) {
-        return new ForumServiceImpl(repository);
+    public ForumService createInstance(ForumRepository repository, UserService userService) {
+        return new ForumServiceImpl(repository, userService);
     }
 }

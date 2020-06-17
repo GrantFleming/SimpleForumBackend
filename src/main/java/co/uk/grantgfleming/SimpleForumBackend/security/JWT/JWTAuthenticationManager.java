@@ -1,7 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend.security.JWT;
 
 import co.uk.grantgfleming.SimpleForumBackend.users.User;
-import co.uk.grantgfleming.SimpleForumBackend.users.UserNotFoundException;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +9,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ProviderNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
 
 /**
  * For authenticating BearerAuthenticationTokens where the credentials are a JWT token
@@ -43,27 +40,17 @@ public class JWTAuthenticationManager implements AuthenticationManager {
         }
 
         String bearerToken = (String) authentication.getCredentials();
-        User user;
+        UserDetails user;
         try {
             String username = jwtService.validateJWT(bearerToken);
-            user = userService.getUser(username);
+            user = userService.loadUserByUsername(username);
         } catch (JWTVerificationException e) {
             throw new BadCredentialsException(e.getMessage());
-        } catch (UserNotFoundException e) {
+        } catch (UsernameNotFoundException e) {
             throw new ProviderNotFoundException(e.getMessage());
         }
 
-        return buildAuthentication(user, bearerToken);
-    }
-
-
-    private Authentication buildAuthentication(User user, String jwtToken) {
-        String role = "NONE";
-        if (user.getRole() != null)
-            role = "ROLE_" + user.getRole().name();
-        GrantedAuthority userRole = new SimpleGrantedAuthority(role);
-
-        return new BearerAuthenticationToken(user, jwtToken, Collections.singleton(userRole));
+        return new BearerAuthenticationToken(user, bearerToken, user.getAuthorities());
     }
 
 }

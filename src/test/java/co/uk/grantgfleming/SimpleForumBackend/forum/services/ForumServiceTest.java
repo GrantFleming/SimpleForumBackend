@@ -1,9 +1,12 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum.services;
 
 import co.uk.grantgfleming.SimpleForumBackend.forum.Forum;
+import co.uk.grantgfleming.SimpleForumBackend.forum.ForumDTO;
 import co.uk.grantgfleming.SimpleForumBackend.forum.ForumRepository;
+import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,13 +22,15 @@ abstract class ForumServiceTest {
 
     private ForumService sut;
     private ForumRepository mockRepo;
+    private UserService mockUserService;
 
-    public abstract ForumService createInstance(ForumRepository repository);
+    public abstract ForumService createInstance(ForumRepository repository, UserService userService);
 
     @BeforeEach
     void setUp() {
         mockRepo = mock(ForumRepository.class);
-        sut = createInstance(mockRepo);
+        mockUserService = mock(UserService.class);
+        sut = createInstance(mockRepo, mockUserService);
     }
 
     @Test
@@ -80,32 +85,24 @@ abstract class ForumServiceTest {
     @Test
     void shouldAddAForumWithNoId() {
         // given that a forum does not contain an Id
-        Forum testForum = new Forum();
+        ForumDTO testForum = new ForumDTO();
+        testForum.setName("some forum name");
+        testForum.setDescription("some forum description");
         Forum repoCreatedForum = new Forum();
-        when(mockRepo.save(testForum)).thenReturn(repoCreatedForum);
+        when(mockRepo.save(any())).thenReturn(repoCreatedForum);
 
         // when it is added through the service
         Forum returnedForum = sut.addForum(testForum);
 
         // then it is added to the underlying repository
-        verify(mockRepo, times(1)).save(testForum);
+        ArgumentCaptor<Forum> forumCaptor = ArgumentCaptor.forClass(Forum.class);
+        verify(mockRepo, times(1)).save(forumCaptor.capture());
+        Forum capturedForum = forumCaptor.getValue();
+        assertEquals(capturedForum.getName(), testForum.getName());
+        assertEquals(capturedForum.getDescription(), testForum.getDescription());
 
         // and whatever is given back from the repository is returned
         assertEquals(repoCreatedForum, returnedForum);
-    }
-
-    @Test
-    void shouldThrowIfForumContainsId() {
-        // given that a forum already has an id
-        Forum forum = new Forum();
-        forum.setId(3L);
-
-        // when it is added through the service
-        // then an InvalidNewForumException is thrown
-        assertThrows(InvalidNewForumException.class, () -> sut.addForum(forum));
-
-        // and it is not added ot the repository
-        verify(mockRepo, never()).save(any());
     }
 
     @Test

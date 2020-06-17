@@ -39,6 +39,7 @@ class UserControllerTest {
     void shouldSaveIfEmailDoesNotExist() throws Exception {
         // given that no user with a certain email exists in the repository
         when(userRepository.existsByEmail(any())).thenReturn(false);
+        when(userRepository.save(any())).thenReturn(new User());
 
         // when an attempt is made to register a new user with this email
         String username = "some email";
