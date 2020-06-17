@@ -21,7 +21,18 @@ class UserControllerTest {
 
         // when an attempt is made to register a new user with this email
         // then a UserAlreadyExistsException is thrown
-        assertThrows(UserAlreadyExistsException.class, () -> controller.register("someemail", "somepassword"));
+        assertThrows(UserAlreadyExistsException.class, () -> controller.register("someemail", "somealias", "somepassword"));
+    }
+
+    @Test
+    void shouldThrowIfAliasExists() {
+        // given that a user with a certain alias already exists in the repository
+        when(userRepository.existsByAlias(any())).thenReturn(true);
+
+        // when an attempt is make to register a new user with this alias
+        // then a UserAlreadyExistsException is thrown
+        String alias = "someExistingAlias";
+        assertThrows(UserAlreadyExistsException.class, () -> controller.register("some email", alias, "somepassword"));
     }
 
     @Test
@@ -31,7 +42,7 @@ class UserControllerTest {
 
         // when an attempt is made to register a new user with this email
         String username = "some email";
-        controller.register(username, "somepassword");
+        controller.register(username, "someuniquealias", "somepassword");
 
         // then a user with this email is saved to the repository
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);

@@ -151,10 +151,7 @@ public abstract class SecurityChainIT {
         }
 
         private User createNewUserInRepository(User.Role role) {
-            User user = new User();
-            user.setEmail("user@email.com");
-            user.setPassword(passwordEncoder.encode("password"));
-            user.setRole(role);
+            User user = new User(null, "user@email.com", "someAlias", passwordEncoder.encode("password"), role);
             return userRepository.save(user);
         }
 

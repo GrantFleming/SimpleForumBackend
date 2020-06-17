@@ -18,11 +18,13 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    User register(@RequestParam String email, @RequestParam String password) throws UserAlreadyExistsException {
+    User register(@RequestParam String email, @RequestParam String alias, @RequestParam String password) throws UserAlreadyExistsException {
         if (emailExists(email))
-            throw new UserAlreadyExistsException(email);
+            throw new UserAlreadyExistsException("email: " + email);
+        else if (repository.existsByAlias(alias))
+            throw new UserAlreadyExistsException("alias: " + alias);
 
-        User u = new User(null, email, passwordEncoder.encode(password), User.Role.USER);
+        User u = new User(null, email, alias, passwordEncoder.encode(password), User.Role.USER);
         return repository.save(u);
     }
 

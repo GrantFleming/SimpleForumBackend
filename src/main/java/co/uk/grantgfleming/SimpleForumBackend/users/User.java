@@ -25,6 +25,10 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @NotEmpty
+    @Column(unique = true)
+    private String alias;
+
     @JsonIgnore
     @ToString.Exclude
     private String password;

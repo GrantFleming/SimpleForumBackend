@@ -33,7 +33,7 @@ public class UserControllerIT {
     void shouldReturn201OnSuccessfulRegistration() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content("email=someemail&password=somepassword")).andExpect(status().isCreated());
+                .content("email=someemail&alias=somealias&password=somepassword")).andExpect(status().isCreated());
     }
 
     @Test
@@ -45,6 +45,38 @@ public class UserControllerIT {
         mvc.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .content("email=" + email + "&password=somepassword")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400WhenAttemptingToRegisterExistingAlias() throws Exception {
+        String alias = "somealias";
+
+        when(userRepository.existsByAlias(alias)).thenReturn(true);
+
+        mvc.perform(MockMvcRequestBuilders.post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content("email=someemail&" + alias + "&password=somepassword")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400WhenAttemptingRegistrationWithMissingEmail() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content("alias=somealias&password=somepassword")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400WhenAttemptingRegistrationWithMissingAlias() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content("email=someemail&password=somepassword")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400WhenAttemptingRegistrationWithMissingPassword() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content("email=someemail&alias=somealias")).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -63,5 +95,4 @@ public class UserControllerIT {
     void shouldReturn400WhenValidatingEmailIfNoEmailIsProvided() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/user/validateEmail")).andExpect(status().isBadRequest());
     }
-
 }
