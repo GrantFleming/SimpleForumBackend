@@ -1,9 +1,13 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum.services;
 
+import co.uk.grantgfleming.SimpleForumBackend.forum.Forum;
 import co.uk.grantgfleming.SimpleForumBackend.forum.Post;
+import co.uk.grantgfleming.SimpleForumBackend.forum.PostDTO;
 import co.uk.grantgfleming.SimpleForumBackend.forum.PostRepository;
+import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,14 +23,16 @@ abstract class PostServiceTest {
     private PostService sut;
     private PostRepository mockRepo;
     private ForumService mockForumService;
+    private UserService mockUserService;
 
-    public abstract PostService createInstance(PostRepository repository, ForumService forumService);
+    public abstract PostService createInstance(PostRepository repository, ForumService forumService, UserService userService);
 
     @BeforeEach
     void setUp() {
         mockRepo = mock(PostRepository.class);
         mockForumService = mock(ForumService.class);
-        sut = createInstance(mockRepo, mockForumService);
+        mockUserService = mock(UserService.class);
+        sut = createInstance(mockRepo, mockForumService, mockUserService);
     }
 
     @Test
@@ -95,15 +101,25 @@ abstract class PostServiceTest {
         // given that a new post is valid
         // valid here means does not have an id already allocated
         // and refers to a forum that exists
-        Post testPost = new Post();
+        PostDTO testPost = new PostDTO();
+        testPost.setTitle("some title");
+        testPost.setBody("some body");
         testPost.setForumId(1L);
         when(mockForumService.existsById(1L)).thenReturn(true);
+        Forum returnedForum = new Forum();
+        returnedForum.setId(1L);
+        when(mockForumService.findForumById(1L)).thenReturn(returnedForum);
 
         // when is is added to the service
         sut.addPost(testPost);
 
         // then it is added to the underlying repository
-        verify(mockRepo, times(1)).save(testPost);
+        ArgumentCaptor<Post> postCaptor = ArgumentCaptor.forClass(Post.class);
+        verify(mockRepo, times(1)).save(postCaptor.capture());
+        Post addedPost = postCaptor.getValue();
+        assertEquals(addedPost.getForum().getId(), testPost.getForumId());
+        assertEquals(addedPost.getTitle(), testPost.getTitle());
+        assertEquals(addedPost.getBody(), testPost.getBody());
     }
 
     @Test
@@ -111,12 +127,12 @@ abstract class PostServiceTest {
         // given that a new post is valid
         // valid here means does not have an id already allocated
         // and refers to a forum that exists
-        Post testPost = new Post();
+        PostDTO testPost = new PostDTO();
         testPost.setForumId(1L);
         when(mockForumService.existsById(1L)).thenReturn(true);
         Post repoReturnedPost = new Post();
         // not necessarily the same Post object need be returned!
-        when(mockRepo.save(testPost)).thenReturn(repoReturnedPost);
+        when(mockRepo.save(any())).thenReturn(repoReturnedPost);
 
         // when it is added to the service
         Post returnedPost = sut.addPost(testPost);
@@ -126,24 +142,11 @@ abstract class PostServiceTest {
     }
 
     @Test
-    void shouldThrowInvalidNewPostExceptionIfGivenPostAlreadyHasAnId() {
-        // given that a new post is supplied with an id already allocated
-        Post testPost = new Post();
-        testPost.setId(3L);
-
-        // when this post is added to the service
-        // then an InvalidNewPostException is thrown
-        assertThrows(InvalidNewPostException.class, () -> sut.addPost(testPost));
-
-        // and it is not added to the underlying repository
-        verify(mockRepo, never()).save(any());
-    }
-
-    @Test
     void shouldThrowInvalidNewPostExceptionIfNewPostRefersToNonExistentForum() {
         // given that a new post refers to a forum that does not exist
         when(mockForumService.existsById(9L)).thenReturn(false);
-        Post post = new Post();
+        when(mockForumService.findForumById(9L)).thenThrow(new ForumNotFoundException(9L));
+        PostDTO post = new PostDTO();
         post.setForumId(9L);
 
         // when this post is added to the service

@@ -21,17 +21,29 @@ class UserControllerTest {
 
         // when an attempt is made to register a new user with this email
         // then a UserAlreadyExistsException is thrown
-        assertThrows(UserAlreadyExistsException.class, () -> controller.register("someemail", "somepassword"));
+        assertThrows(UserAlreadyExistsException.class, () -> controller.register("someemail", "somealias", "somepassword"));
+    }
+
+    @Test
+    void shouldThrowIfAliasExists() {
+        // given that a user with a certain alias already exists in the repository
+        when(userRepository.existsByAlias(any())).thenReturn(true);
+
+        // when an attempt is make to register a new user with this alias
+        // then a UserAlreadyExistsException is thrown
+        String alias = "someExistingAlias";
+        assertThrows(UserAlreadyExistsException.class, () -> controller.register("some email", alias, "somepassword"));
     }
 
     @Test
     void shouldSaveIfEmailDoesNotExist() throws Exception {
         // given that no user with a certain email exists in the repository
         when(userRepository.existsByEmail(any())).thenReturn(false);
+        when(userRepository.save(any())).thenReturn(new User());
 
         // when an attempt is made to register a new user with this email
         String username = "some email";
-        controller.register(username, "somepassword");
+        controller.register(username, "someuniquealias", "somepassword");
 
         // then a user with this email is saved to the repository
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
@@ -57,6 +69,26 @@ class UserControllerTest {
         // when the existence of the email is queried
         // then it should return false
         assertFalse(controller.emailExists("something"));
+    }
+
+    @Test
+    void shouldReturnTrueIfAliasExistsWhenValidatingAlias() {
+        // given that a user with a certain alias exists in the repository
+        when(userRepository.existsByAlias(any())).thenReturn(true);
+
+        // when the existence of the alias is queried
+        // then it should return true
+        assertTrue(controller.aliasExists("something"));
+    }
+
+    @Test
+    void shouldReturnFalseIfAliasDoesNotExistWhenValidatingAlias() {
+        // given that a user with a certain alias does not exist in the repository
+        when(userRepository.existsByAlias(any())).thenReturn(false);
+
+        // when the existence of the alias is queried
+        // then it should return false
+        assertFalse(controller.aliasExists("something"));
     }
 
     @Test

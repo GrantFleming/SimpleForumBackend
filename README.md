@@ -28,6 +28,8 @@ Web API Overview
 | endpoint                | method | body                                  | description                                         | authentication method |
 |-------------------------|--------|---------------------------------------|-----------------------------------------------------|-----------------------|
 | /user/register          | POST   | x-www-form-encoded email and password | register a new user                                 | -                     |
+| /user/validateEmail     | GET    | - (email as query param 'email')      | check whither a given email exists already          | -                     |
+| /user/validateAlias     | GET    | - (alias as query param 'alias')      | check whither a given alias exists already          | -                     |
 | /auth/token             | GET    | -                                     | get a token for authentication with the application | Basic                 |
 | /api/forums             | GET    | -                                     | get all forums                                      | -                     |
 | /api/forums/{id}        | GET    | -                                     | get forum with the given id                         | -                     |

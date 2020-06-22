@@ -2,6 +2,7 @@ package co.uk.grantgfleming.SimpleForumBackend.forum.services;
 
 import co.uk.grantgfleming.SimpleForumBackend.forum.Forum;
 import co.uk.grantgfleming.SimpleForumBackend.forum.Post;
+import co.uk.grantgfleming.SimpleForumBackend.forum.PostDTO;
 
 import java.util.List;
 
@@ -40,6 +41,6 @@ public interface PostService {
      *                                 store to avoid conflicts
      * @throws ForumNotFoundException  if the provided Post claims to belong to a {@link Forum} that does not exist
      */
-    Post addPost(Post post) throws InvalidNewPostException, ForumNotFoundException;
+    Post addPost(PostDTO post) throws InvalidNewPostException, ForumNotFoundException;
 
 }

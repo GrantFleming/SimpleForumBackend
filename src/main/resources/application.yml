@@ -4,3 +4,13 @@ frontend:
 jwt:
   expiration-time: 43200000 # 12 hours
 
+# hibernate has trouble dropping all tables in the database between tests
+# as it seems to be unable to figure out the correct order in which to
+# drop the tables. we have to provide a custom sql script to do this.
+spring:
+  jpa:
+    properties:
+      javax.persistence:
+        schema-generation:
+          drop-source: script
+          drop-script-source: drop-tables.sql

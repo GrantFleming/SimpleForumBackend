@@ -8,7 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * The controller for accessing Posts
+ */
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -20,19 +24,22 @@ public class PostController {
     }
 
     @GetMapping("")
-    List<Post> getPostsForForum(@RequestParam("forumId") Long forumId) {
-        return postService.getPostsForForum(forumId);
+    List<PostDTO> getPostsForForum(@RequestParam("forumId") Long forumId) {
+        List<Post> posts = postService.getPostsForForum(forumId);
+        return posts.stream().map(PostDTO::fromPost).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    Post getPostById(@PathVariable Long id) {
-        return postService.findPostById(id);
+    PostDTO getPostById(@PathVariable Long id) {
+        Post post = postService.findPostById(id);
+        return PostDTO.fromPost(post);
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    Post postNewPost(@RequestBody Post post) {
-        return postService.addPost(post);
+    PostDTO postNewPost(@RequestBody PostDTO postDTO) {
+        Post createdPost = postService.addPost(postDTO);
+        return PostDTO.fromPost(createdPost);
     }
 
     /*
