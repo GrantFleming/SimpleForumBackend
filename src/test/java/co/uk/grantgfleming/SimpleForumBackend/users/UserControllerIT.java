@@ -10,8 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -95,5 +98,37 @@ public class UserControllerIT {
     @Test
     void shouldReturn400WhenValidatingEmailIfNoEmailIsProvided() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/user/validateEmail")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn200WhenValidatingAliasIfAnAliasIsProvided() throws Exception {
+        // whither or not the alias exists the status should always be 200
+        when(userRepository.existsByAlias(any())).thenReturn(true);
+
+        mvc.perform(MockMvcRequestBuilders.get("/user/validateAlias?alias=somealias"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("true")));
+
+        when(userRepository.existsByAlias(any())).thenReturn(false);
+
+        mvc.perform(MockMvcRequestBuilders.get("/user/validateAlias?alias=somealias"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("false")));
+    }
+
+    @Test
+    void shouldReturn400WhenValidatingAliasIfNoAliasIsProvided() throws Exception {
+        // whither or not the alias exists the status should always be 400
+        when(userRepository.existsByAlias(any())).thenReturn(true);
+
+        mvc.perform(MockMvcRequestBuilders.get("/user/validateAlias"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(emptyString()));
+
+        when(userRepository.existsByAlias(any())).thenReturn(false);
+
+        mvc.perform(MockMvcRequestBuilders.get("/user/validateAlias"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(emptyString()));
     }
 }

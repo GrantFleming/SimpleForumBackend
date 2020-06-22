@@ -39,6 +39,11 @@ public class UserController {
         return repository.existsByEmail(email);
     }
 
+    @GetMapping("/validateAlias")
+    Boolean aliasExists(@RequestParam String alias) {
+        return repository.existsByAlias(alias);
+    }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     String userAlreadyExistsHandler(UserAlreadyExistsException e) {
