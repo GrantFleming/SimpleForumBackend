@@ -4,7 +4,7 @@ import co.uk.grantgfleming.SimpleForumBackend.forum.Forum;
 import co.uk.grantgfleming.SimpleForumBackend.forum.Post;
 import co.uk.grantgfleming.SimpleForumBackend.forum.PostDTO;
 import co.uk.grantgfleming.SimpleForumBackend.forum.PostRepository;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post addPost(PostDTO postDTO) throws InvalidNewPostException, ForumNotFoundException {
         Forum forum = forumService.findForumById(postDTO.getForumId());
-        User creator = userService.getCurrentAuthenticatedUser();
+        ForumUser creator = userService.getCurrentAuthenticatedUser();
 
         Post post = new Post();
         post.setTitle(postDTO.getTitle());

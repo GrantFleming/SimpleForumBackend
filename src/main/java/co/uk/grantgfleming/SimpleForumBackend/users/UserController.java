@@ -24,14 +24,14 @@ public class UserController {
         else if (repository.existsByAlias(alias))
             throw new UserAlreadyExistsException("alias: " + alias);
 
-        User user = new User();
-        user.setEmail(email);
-        user.setAlias(alias);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRole(User.Role.USER);
+        ForumUser forumUser = new ForumUser();
+        forumUser.setEmail(email);
+        forumUser.setAlias(alias);
+        forumUser.setPassword(passwordEncoder.encode(password));
+        forumUser.setRole(ForumUser.Role.USER);
 
-        User newUser = repository.save(user);
-        return UserDTO.fromUser(newUser);
+        ForumUser newForumUser = repository.save(forumUser);
+        return UserDTO.fromUser(newForumUser);
     }
 
     @GetMapping("/validateEmail")

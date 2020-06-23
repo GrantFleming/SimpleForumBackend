@@ -1,6 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend.security.JWT;
 
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * For authenticating BearerAuthenticationTokens where the credentials are a JWT token
  * specifying the username of a user to be authenticated.
  * <p>
- * It attempts to get a {@link User} from the {@link UserService} with the username provided
+ * It attempts to get a {@link ForumUser} from the {@link UserService} with the username provided
  * by the token.
  */
 @Slf4j

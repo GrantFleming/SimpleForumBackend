@@ -1,6 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum;
 
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +45,7 @@ class PostControllerIT {
 
     @MockBean
     UserRepository userRepository;
-    User user;
+    ForumUser forumUser;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -61,10 +61,10 @@ class PostControllerIT {
         // ensure the userRepository is able to return a corresponding
         //  co.uk.grantgfleming.SimpleForumBackend.users.User object for the
         // @WithMockUser's Authenticated principle
-        user = new User();
-        user.setAlias("some alias");
-        user.setEmail("user");
-        when(userRepository.findByEmail(any())).thenReturn(of(user));
+        forumUser = new ForumUser();
+        forumUser.setAlias("some alias");
+        forumUser.setEmail("user");
+        when(userRepository.findByEmail(any())).thenReturn(of(forumUser));
     }
 
     @Test
@@ -73,7 +73,7 @@ class PostControllerIT {
         // given there are three posts in the repository
         Post[] testPosts = {new Post(), new Post(), new Post()};
         Arrays.stream(testPosts).forEach(post -> post.setForum(new Forum()));
-        Arrays.stream(testPosts).forEach(post -> post.setCreator(new User()));
+        Arrays.stream(testPosts).forEach(post -> post.setCreator(new ForumUser()));
         when(mockPostRepository.findByForumId(any())).thenReturn(Arrays.asList(testPosts));
 
         // when a get request is make to api/posts with a valid forum id query string parameter
@@ -122,7 +122,7 @@ class PostControllerIT {
     void shouldGetAPostThatExists() throws Exception {
         // given a post with id=3 exists
         Post testPost = new Post();
-        testPost.setCreator(new User());
+        testPost.setCreator(new ForumUser());
         testPost.setForum(new Forum());
         testPost.setId(3L);
         when(mockPostRepository.findById(3L)).thenReturn(of(testPost));
@@ -151,7 +151,7 @@ class PostControllerIT {
         Post post = new Post();
         post.setId(3L);
         post.setForum(new Forum());
-        post.setCreator(new User());
+        post.setCreator(new ForumUser());
         when(mockPostRepository.save(any())).thenReturn(post);
         when(mockForumRepository.findById(1L)).thenReturn(of(new Forum()));
         // when a post request is made to api/posts with a valid post in json format
@@ -218,6 +218,6 @@ class PostControllerIT {
 
         // the returned ForumDTO contains the authenticated users alias
         PostDTO returnedPost = mapper.readValue(content, PostDTO.class);
-        assertEquals(user.getAlias(), returnedPost.getCreator());
+        assertEquals(forumUser.getAlias(), returnedPost.getCreator());
     }
 }

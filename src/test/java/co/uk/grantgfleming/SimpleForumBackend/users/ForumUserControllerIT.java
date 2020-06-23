@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerIT {
+public class ForumUserControllerIT {
 
     @Autowired
     MockMvc mvc;
@@ -34,7 +34,7 @@ public class UserControllerIT {
 
     @Test
     void shouldReturn201OnSuccessfulRegistration() throws Exception {
-        when(userRepository.save(any())).thenReturn(new User());
+        when(userRepository.save(any())).thenReturn(new ForumUser());
         mvc.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .content("email=someemail&alias=somealias&password=somepassword")).andExpect(status().isCreated());

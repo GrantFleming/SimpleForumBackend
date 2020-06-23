@@ -18,7 +18,7 @@ public class ForumDTO {
         forumDTO.setId(forum.getId());
         forumDTO.setName(forum.getName());
         forumDTO.setDescription(forum.getDescription());
-        forumDTO.setCreator(forum.getUser().getAlias());
+        forumDTO.setCreator(forum.getForumUser().getAlias());
         return forumDTO;
     }
 }

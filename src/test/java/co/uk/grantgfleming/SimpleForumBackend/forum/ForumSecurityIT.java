@@ -1,7 +1,7 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum;
 
 import co.uk.grantgfleming.SimpleForumBackend.security.SecurityChainIT;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
@@ -68,7 +68,11 @@ public class ForumSecurityIT extends SecurityChainIT {
      */
     @Test
     void shouldCallThroughIfAuthenticatedWithRoleUser() throws Exception {
-        request().endpoint("/api/forums").method(HttpMethod.POST).authenticated().withRole(User.Role.USER).perform();
+        request().endpoint("/api/forums")
+                .method(HttpMethod.POST)
+                .authenticated()
+                .withRole(ForumUser.Role.USER)
+                .perform();
 
         verify(forumController).postNewForum(any());
     }

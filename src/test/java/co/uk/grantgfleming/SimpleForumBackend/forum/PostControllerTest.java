@@ -4,7 +4,7 @@ import co.uk.grantgfleming.SimpleForumBackend.forum.services.ForumNotFoundExcept
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.InvalidNewPostException;
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.PostNotFoundException;
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.PostService;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class PostControllerTest {
         // By default we have the mockPostService return just enough Post to avoid
         // NullPointerExceptions in the tests
         Post returnedPost = new Post();
-        returnedPost.setCreator(new User());
+        returnedPost.setCreator(new ForumUser());
         returnedPost.setForum(new Forum());
         when(mockPostService.addPost(any())).thenReturn(returnedPost);
         when(mockPostService.findPostById(any())).thenReturn(returnedPost);

@@ -4,7 +4,7 @@ import co.uk.grantgfleming.SimpleForumBackend.forum.Forum;
 import co.uk.grantgfleming.SimpleForumBackend.forum.ForumRepository;
 import co.uk.grantgfleming.SimpleForumBackend.forum.Post;
 import co.uk.grantgfleming.SimpleForumBackend.forum.PostRepository;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.server.web.WebServlet;
@@ -16,37 +16,37 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Slf4j
-@Profile("dev")
+@Profile("in-mem-db")
 public class DevDBInitializer {
     @Bean
     CommandLineRunner initDatabase(PostRepository postRepository, ForumRepository forumRepository, UserRepository userRepository) {
         return args -> {
             log.info("Loading test database content.");
 
-            User user = new User();
-            user.setEmail("builtin@user.com");
-            user.setAlias("built-in user");
-            user.setRole(User.Role.USER);
-            user = userRepository.save(user);
+            ForumUser forumUser = new ForumUser();
+            forumUser.setEmail("builtin@user.com");
+            forumUser.setAlias("built-in user");
+            forumUser.setRole(ForumUser.Role.USER);
+            forumUser = userRepository.save(forumUser);
 
             Forum forum = new Forum();
             forum.setName("Forum Title");
             forum.setDescription("Forum Description");
-            forum.setUser(user);
+            forum.setForumUser(forumUser);
             forum = forumRepository.save(forum);
 
             Post post1 = new Post();
             post1.setTitle("First Post");
             post1.setBody("Some content here");
             post1.setForum(forum);
-            post1.setCreator(user);
+            post1.setCreator(forumUser);
             postRepository.save(post1);
 
             Post post2 = new Post();
             post2.setTitle("Second Post");
             post2.setBody("Some more content here");
             post2.setForum(forum);
-            post2.setCreator(user);
+            post2.setCreator(forumUser);
             postRepository.save(post2);
         };
     }
