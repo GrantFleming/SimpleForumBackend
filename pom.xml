@@ -78,15 +78,11 @@
             <artifactId>java-jwt</artifactId>
             <version>3.10.3</version>
         </dependency>
-
-        <!-- For cloud foundry: -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cloud-connectors</artifactId>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.64</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
