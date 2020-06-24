@@ -1,6 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum;
 
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ class ForumControllerIT {
     ForumRepository mockForumRepository;
     @MockBean
     UserRepository userRepository;
-    User user;
+    ForumUser forumUser;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -53,9 +53,9 @@ class ForumControllerIT {
 
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setAlias("some alias");
-        when(userRepository.findByEmail(any())).thenReturn(of(user));
+        forumUser = new ForumUser();
+        forumUser.setAlias("some alias");
+        when(userRepository.findByEmail(any())).thenReturn(of(forumUser));
     }
 
     @Test
@@ -63,7 +63,7 @@ class ForumControllerIT {
     void shouldGetAllForums() throws Exception {
         // given there are three forums in the repository
         Forum[] testForums = {new Forum(), new Forum(), new Forum()};
-        Arrays.stream(testForums).forEach(forum -> forum.setUser(user));
+        Arrays.stream(testForums).forEach(forum -> forum.setForumUser(forumUser));
         List<ForumDTO> forumDTOs = Arrays.stream(testForums).map(ForumDTO::fromForum).collect(Collectors.toList());
 
         String testForumsAsJson = mapper.writeValueAsString(forumDTOs);
@@ -95,7 +95,7 @@ class ForumControllerIT {
     void shouldGetAForumThatExists() throws Exception {
         // given there is a forum with id=1 in the repository
         Forum forum = new Forum();
-        forum.setUser(user);
+        forum.setForumUser(forumUser);
         String forumAsJson = mapper.writeValueAsString(ForumDTO.fromForum(forum));
         when(mockForumRepository.findById(1L)).thenReturn(of(forum));
 
@@ -126,7 +126,7 @@ class ForumControllerIT {
         // and the forumRepository returns a newly created forum with a generated id on save
         Forum forum = new Forum();
         forum.setId(6L);
-        forum.setUser(user);
+        forum.setForumUser(forumUser);
         when(mockForumRepository.save(any())).thenReturn(forum);
 
         // when a post request is make to api/forums with a valid forum in json format
@@ -155,6 +155,6 @@ class ForumControllerIT {
 
         // the returned ForumDTO contains the authenticated users alias
         ForumDTO returnedForum = mapper.readValue(content, ForumDTO.class);
-        assertEquals(user.getAlias(), returnedForum.getCreator());
+        assertEquals(forumUser.getAlias(), returnedForum.getCreator());
     }
 }

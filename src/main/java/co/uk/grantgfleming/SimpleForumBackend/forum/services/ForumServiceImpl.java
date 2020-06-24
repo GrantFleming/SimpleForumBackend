@@ -3,7 +3,7 @@ package co.uk.grantgfleming.SimpleForumBackend.forum.services;
 import co.uk.grantgfleming.SimpleForumBackend.forum.Forum;
 import co.uk.grantgfleming.SimpleForumBackend.forum.ForumDTO;
 import co.uk.grantgfleming.SimpleForumBackend.forum.ForumRepository;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,12 +38,12 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public Forum addForum(ForumDTO forumDTO) throws InvalidNewForumException {
-        User creator = userService.getCurrentAuthenticatedUser();
+        ForumUser creator = userService.getCurrentAuthenticatedUser();
 
         Forum forum = new Forum();
         forum.setName(forumDTO.getName());
         forum.setDescription(forumDTO.getDescription());
-        forum.setUser(creator);
+        forum.setForumUser(creator);
 
         return repository.save(forum);
     }

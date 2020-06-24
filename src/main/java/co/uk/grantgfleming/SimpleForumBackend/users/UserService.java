@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService {
      * @return the user with the given email
      * @throws UserNotFoundException if no user exists with the given email
      */
-    public User getUserByEmail(String email) throws UserNotFoundException {
+    public ForumUser getUserByEmail(String email) throws UserNotFoundException {
         return repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 
@@ -37,34 +37,35 @@ public class UserService implements UserDetailsService {
      * <p>
      * Delegates to {@link #getUserByEmail}
      */
-    public User getUser(String username) throws UserNotFoundException {
+    public ForumUser getUser(String username) throws UserNotFoundException {
         return getUserByEmail(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user;
+        ForumUser forumUser;
         try {
-            user = getUserByEmail(username);
+            forumUser = getUserByEmail(username);
         } catch (UserNotFoundException e) {
             // Translate our internal exception to the Spring security specific one
             throw new UsernameNotFoundException(e.getMessage(), e);
         }
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Collections.singletonList(authority));
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + forumUser.getRole().name());
+        return new org.springframework.security.core.userdetails.User(forumUser.getEmail(), forumUser.getPassword(), Collections
+                .singletonList(authority));
     }
 
     /**
      * Gets the currently authenticated user.
      */
     @Secured("ROLE_USER")
-    public User getCurrentAuthenticatedUser() {
+    public ForumUser getCurrentAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principle = (UserDetails) authentication.getPrincipal();
-        User authenticatedUser;
+        ForumUser authenticatedForumUser;
         try {
-            authenticatedUser = getUserByEmail(principle.getUsername());
-            return authenticatedUser;
+            authenticatedForumUser = getUserByEmail(principle.getUsername());
+            return authenticatedForumUser;
         } catch (UserNotFoundException e) {
             /*
             This should never throw, the UserDetails object that is the currently authenticated

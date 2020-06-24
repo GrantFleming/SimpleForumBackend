@@ -1,7 +1,7 @@
 package co.uk.grantgfleming.SimpleForumBackend.security;
 
 import co.uk.grantgfleming.SimpleForumBackend.security.JWT.JWTService;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,7 +77,7 @@ public abstract class SecurityChainIT {
         private HttpMethod method = HttpMethod.GET;
         private boolean authenticatedUserRequired = false;
         private boolean basicAuthenticationRequired = false;
-        private User.Role role = User.Role.NONE;
+        private ForumUser.Role role = ForumUser.Role.NONE;
         private String content = "{}";
         private MediaType contentType = MediaType.APPLICATION_JSON;
 
@@ -101,7 +101,7 @@ public abstract class SecurityChainIT {
             return this;
         }
 
-        public RequestBuilder withRole(User.Role role) {
+        public RequestBuilder withRole(ForumUser.Role role) {
             this.role = role;
             return this;
         }
@@ -119,11 +119,11 @@ public abstract class SecurityChainIT {
         public ResultActions perform() throws Exception {
             MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(method, endpoint);
 
-            User newUser = null;
+            ForumUser newForumUser = null;
             if (authenticatedUserRequired) {
                 // Create a new user with the required roles;
-                newUser = createNewUserInRepository(role);
-                addAuthorizationHeader(request, newUser);
+                newForumUser = createNewUserInRepository(role);
+                addAuthorizationHeader(request, newForumUser);
             }
 
             request.content(content);
@@ -132,31 +132,31 @@ public abstract class SecurityChainIT {
             // perform the request itself
             ResultActions result = mvc.perform(request);
             // remove the user we created to perform the request
-            if (newUser != null)
-                userRepository.delete(newUser);
+            if (newForumUser != null)
+                userRepository.delete(newForumUser);
 
             return result;
         }
 
-        private void addAuthorizationHeader(MockHttpServletRequestBuilder request, User newUser) {
+        private void addAuthorizationHeader(MockHttpServletRequestBuilder request, ForumUser newForumUser) {
             if (basicAuthenticationRequired) {
-                String userPassString = newUser.getEmail() + ":password";
+                String userPassString = newForumUser.getEmail() + ":password";
                 String basicAuth = Base64.toBase64String(userPassString.getBytes());
                 request.header("Authorization", "Basic " + basicAuth);
             } else {
                 // Create the request with a valid JWT token then authenticates the newly created user
-                String jwtToken = jwtService.generateJWT(newUser.getEmail());
+                String jwtToken = jwtService.generateJWT(newForumUser.getEmail());
                 request.header("Authorization", "Bearer " + jwtToken);
             }
         }
 
-        private User createNewUserInRepository(User.Role role) {
-            User user = new User();
-            user.setEmail("user@email.com");
-            user.setAlias("someAlias");
-            user.setPassword(passwordEncoder.encode("password"));
-            user.setRole(role);
-            return userRepository.save(user);
+        private ForumUser createNewUserInRepository(ForumUser.Role role) {
+            ForumUser forumUser = new ForumUser();
+            forumUser.setEmail("user@email.com");
+            forumUser.setAlias("someAlias");
+            forumUser.setPassword(passwordEncoder.encode("password"));
+            forumUser.setRole(role);
+            return userRepository.save(forumUser);
         }
 
     }

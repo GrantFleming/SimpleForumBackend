@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class UserServiceTest {
+class ForumUserServiceTest {
 
     UserRepository repository = mock(UserRepository.class);
     UserService userService = new UserService(repository);
@@ -31,14 +31,14 @@ class UserServiceTest {
     @Test
     void shouldReturnUserFromRepositoryIfExists() throws Exception {
         // given that a user with a certain email exists in the repository
-        User user = new User();
-        when(repository.findByEmail("some user email")).thenReturn(of(user));
+        ForumUser forumUser = new ForumUser();
+        when(repository.findByEmail("some user email")).thenReturn(of(forumUser));
 
         // when an attempt to get that user is made
-        User returnedUser = userService.getUser("some user email");
+        ForumUser returnedForumUser = userService.getUser("some user email");
 
         // then the user is returned
-        assertEquals(user, returnedUser);
+        assertEquals(forumUser, returnedForumUser);
     }
 
     @Test
@@ -54,16 +54,16 @@ class UserServiceTest {
     @Test
     void shouldReturnUserWithCorrectEmailAndRolesIfUserExists() {
         // given that a user with a certain email exists in the repository
-        User user = new User();
-        user.setEmail("some user email");
-        user.setPassword("any old password");
-        user.setRole(User.Role.NONE);
-        when(repository.findByEmail("some user email")).thenReturn(of(user));
+        ForumUser forumUser = new ForumUser();
+        forumUser.setEmail("some user email");
+        forumUser.setPassword("any old password");
+        forumUser.setRole(ForumUser.Role.NONE);
+        when(repository.findByEmail("some user email")).thenReturn(of(forumUser));
 
         // when an attempt to get that user is made through the UserDetailsService interface
         UserDetails userDetails = userService.loadUserByUsername("some user email");
 
         // then a UserDetails object with that email is returned
-        assertEquals(user.getEmail(), userDetails.getUsername());
+        assertEquals(forumUser.getEmail(), userDetails.getUsername());
     }
 }

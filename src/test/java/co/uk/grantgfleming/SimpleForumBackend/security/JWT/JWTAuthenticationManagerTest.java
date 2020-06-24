@@ -1,6 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend.security.JWT;
 
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import co.uk.grantgfleming.SimpleForumBackend.users.UserService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.junit.jupiter.api.Test;
@@ -36,12 +36,12 @@ class JWTAuthenticationManagerTest {
         assertThrows(BadCredentialsException.class, () -> jwtAuthManager.authenticate(auth));
     }
 
-    private static User dummyUser() {
-        User aUser = new User();
-        aUser.setRole(User.Role.USER);
-        aUser.setEmail("some@email.com");
-        aUser.setPassword("somePassword");
-        return aUser;
+    private static ForumUser dummyUser() {
+        ForumUser aForumUser = new ForumUser();
+        aForumUser.setRole(ForumUser.Role.USER);
+        aForumUser.setEmail("some@email.com");
+        aForumUser.setPassword("somePassword");
+        return aForumUser;
     }
 
     @Test
@@ -69,8 +69,8 @@ class JWTAuthenticationManagerTest {
     @Test
     void shouldSetAUserAsPrinciple() throws Exception {
         // given that a user exists
-        User aUser = dummyUser();
-        when(userService.getUserByEmail(eq("aUsername"))).thenReturn(aUser);
+        ForumUser aForumUser = dummyUser();
+        when(userService.getUserByEmail(eq("aUsername"))).thenReturn(aForumUser);
         when(userService.loadUserByUsername(any())).thenCallRealMethod();
 
         // when authentication is attempted on providing their username
@@ -80,14 +80,14 @@ class JWTAuthenticationManagerTest {
 
         // then the user is set as the principle
         UserDetails authenticatedUser = (UserDetails) resultAuth.getPrincipal();
-        assertEquals(aUser.getEmail(), authenticatedUser.getUsername());
+        assertEquals(aForumUser.getEmail(), authenticatedUser.getUsername());
     }
 
     @Test
     void shouldSetJWTTokenAsCredential() throws Exception {
         // given that a user exists
-        User aUser = dummyUser();
-        when(userService.getUserByEmail(dummyUser().getEmail())).thenReturn(aUser);
+        ForumUser aForumUser = dummyUser();
+        when(userService.getUserByEmail(dummyUser().getEmail())).thenReturn(aForumUser);
         when(userService.loadUserByUsername(dummyUser().getEmail())).thenCallRealMethod();
 
         // when they are authenticated successfully
@@ -103,8 +103,8 @@ class JWTAuthenticationManagerTest {
     @Test
     void shouldAssignGrantedAuthorityFromUserRole() throws Exception {
         // given that a user has a certain role
-        User aUser = dummyUser();
-        when(userService.getUserByEmail(eq("aUsername"))).thenReturn(aUser);
+        ForumUser aForumUser = dummyUser();
+        when(userService.getUserByEmail(eq("aUsername"))).thenReturn(aForumUser);
         when(userService.loadUserByUsername(any())).thenCallRealMethod();
 
         // when they are authenticated successfully
@@ -116,6 +116,6 @@ class JWTAuthenticationManagerTest {
         Collection<? extends GrantedAuthority> authorities = resultAuth.getAuthorities();
         assertTrue(authorities.stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority()
-                        .equals("ROLE_" + aUser.getRole().name())));
+                        .equals("ROLE_" + aForumUser.getRole().name())));
     }
 }

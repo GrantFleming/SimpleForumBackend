@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class UserControllerTest {
+class ForumUserControllerTest {
 
     UserRepository userRepository = mock(UserRepository.class);
     PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
@@ -39,14 +39,14 @@ class UserControllerTest {
     void shouldSaveIfEmailDoesNotExist() throws Exception {
         // given that no user with a certain email exists in the repository
         when(userRepository.existsByEmail(any())).thenReturn(false);
-        when(userRepository.save(any())).thenReturn(new User());
+        when(userRepository.save(any())).thenReturn(new ForumUser());
 
         // when an attempt is made to register a new user with this email
         String username = "some email";
         controller.register(username, "someuniquealias", "somepassword");
 
         // then a user with this email is saved to the repository
-        ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<ForumUser> argument = ArgumentCaptor.forClass(ForumUser.class);
         verify(userRepository).save(argument.capture());
         assertEquals(username, argument.getValue().getEmail());
     }

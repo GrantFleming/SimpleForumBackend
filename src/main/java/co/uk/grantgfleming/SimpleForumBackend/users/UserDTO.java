@@ -3,7 +3,7 @@ package co.uk.grantgfleming.SimpleForumBackend.users;
 import lombok.Data;
 
 /**
- * A data transfer object for {@link User}s
+ * A data transfer object for {@link ForumUser}s
  */
 @Data
 public class UserDTO {
@@ -14,11 +14,11 @@ public class UserDTO {
 
     private String alias;
 
-    public static UserDTO fromUser(User user) {
+    public static UserDTO fromUser(ForumUser forumUser) {
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setAlias(user.getAlias());
+        userDTO.setId(forumUser.getId());
+        userDTO.setEmail(forumUser.getEmail());
+        userDTO.setAlias(forumUser.getAlias());
         return userDTO;
     }
 

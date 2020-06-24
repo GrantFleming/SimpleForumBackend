@@ -2,7 +2,7 @@ package co.uk.grantgfleming.SimpleForumBackend.forum;
 
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.ForumService;
 import co.uk.grantgfleming.SimpleForumBackend.forum.services.InvalidNewForumException;
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ class ForumControllerTest {
         // by default for these tests we have the forumService return empty forums
         // to avoid NullPointerExceptions
         Forum serviceReturnedForum = new Forum();
-        serviceReturnedForum.setUser(new User());
+        serviceReturnedForum.setForumUser(new ForumUser());
         when(mockForumService.addForum(any())).thenReturn(serviceReturnedForum);
         when(mockForumService.findForumById(any())).thenReturn(serviceReturnedForum);
 

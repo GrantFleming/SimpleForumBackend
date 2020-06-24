@@ -15,10 +15,10 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class ForumUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "USER_GENERATOR")
     private Long id;
 
     @NotEmpty
@@ -51,6 +51,6 @@ public class User {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "forumUser", cascade = CascadeType.REMOVE)
     private Set<Forum> forums = new HashSet<>();
 }

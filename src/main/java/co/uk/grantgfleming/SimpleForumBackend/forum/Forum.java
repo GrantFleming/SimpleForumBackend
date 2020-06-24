@@ -1,6 +1,6 @@
 package co.uk.grantgfleming.SimpleForumBackend.forum;
 
-import co.uk.grantgfleming.SimpleForumBackend.users.User;
+import co.uk.grantgfleming.SimpleForumBackend.users.ForumUser;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -25,6 +25,7 @@ public class Forum {
     private Collection<Post> posts;
 
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "user_id")
+    private ForumUser forumUser;
 }
 
